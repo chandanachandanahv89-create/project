@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Course List</title>
+
+<style>
+/* ===== GLOBAL RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background: linear-gradient(135deg,#f1f5f9,#ffffff);
+    color: #333;
+    animation: fadeIn 1s ease-in;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0 }
+    to { transform: translateY(0); opacity: 1 }
+}
+
+@keyframes rowFade {
+    from { opacity: 0; transform: translateX(-10px) }
+    to { opacity: 1; transform: translateX(0) }
+}
+
+/* ===== NAVBAR ===== */
+.nav {
+    background: linear-gradient(90deg, #ff7a00, #ffb703);
+    padding: 16px 30px;
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    animation: slideDown 0.8s ease;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.nav a:hover {
+    background: #ffffff;
+    color: #ff7a00;
+    transform: translateY(-2px);
+}
+
+/* ===== HEADING ===== */
+h2 {
+    text-align: center;
+    margin: 30px 0;
+    color: #ff7a00;
+    font-size: 28px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 92%;
+    max-width: 1000px;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+}
+
+thead {
+    background: linear-gradient(90deg,#ff922b,#ffa94d);
+}
+
+th {
+    color: #ffffff;
+    padding: 16px;
+    font-size: 16px;
+    text-align: left;
+}
+
+td {
+    padding: 15px;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr {
+    animation: rowFade 0.5s ease;
+    transition: 0.3s;
+}
+
+tbody tr:hover {
+    background: #fff4e6;
+    transform: scale(1.01);
+}
+
+/* ===== BUTTONS ===== */
+button {
+    padding: 7px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button.view {
+    background: linear-gradient(90deg,#4dabf7,#228be6);
+    color: #fff;
+}
+
+button.view:hover {
+    box-shadow: 0 6px 14px rgba(34,139,230,0.4);
+    transform: scale(1.05);
+}
+
+button.delete {
+    background: linear-gradient(90deg,#ff6b6b,#fa5252);
+    color: #fff;
+}
+
+button.delete:hover {
+    box-shadow: 0 6px 14px rgba(250,82,82,0.4);
+    transform: scale(1.05);
+}
+
+/* ===== EMPTY STATE ===== */
+#courseTable:empty::after {
+    content: "No courses available";
+    display: block;
+    text-align: center;
+    padding: 25px;
+    color: #999;
+    font-style: italic;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+    .nav {
+        flex-wrap: wrap;
+        gap: 15px;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 12px;
+    }
+}
+</style>
+</head>
+
+<body onload="loadCourseList()">
+
+<div class="nav">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student_list.html">Students</a>
+    <a href="add_student.html">Add Student</a>
+    <a href="course_list.html">Courses</a>
+    <a href="add_course.html">Add Course</a>
+</div>
+
+<h2>📚 Course List</h2>
+
+<table>
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Duration</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody id="courseTable"></tbody>
+</table>
+
+<script>
+/* ===== LOAD COURSE LIST ===== */
+function loadCourseList() {
+    const table = document.getElementById("courseTable");
+    let courses = JSON.parse(localStorage.getItem("courses")) || [];
+
+    table.innerHTML = "";
+
+    if (courses.length === 0) return;
+
+    courses.forEach((course, index) => {
+        table.innerHTML += `
+        <tr>
+            <td>${course.name}</td>
+            <td>${course.duration}</td>
+            <td>
+                <button class="view" onclick="viewCourse(${index})">View</button>
+                <button class="delete" onclick="deleteCourse(${index})">Delete</button>
+            </td>
+        </tr>`;
+    });
+}
+
+/* ===== VIEW COURSE ===== */
+function viewCourse(index) {
+    window.location.href = \`course_detail.html?index=\${index}\`;
+}
+
+/* ===== DELETE COURSE ===== */
+function deleteCourse(index) {
+    if (!confirm("Are you sure you want to delete this course?")) return;
+
+    let courses = JSON.parse(localStorage.getItem("courses"));
+    courses.splice(index, 1);
+    localStorage.setItem("courses", JSON.stringify(courses));
+    loadCourseList();
+}
+</script>
+
+</body>
+</html>

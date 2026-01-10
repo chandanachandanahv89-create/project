@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Courses Management</title>
+
+<style>
+/* ===== GLOBAL ===== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#fdfbfb,#ebedee);
+    padding:20px;
+    animation:fadeIn 1s ease-in;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes slideDown{
+    from{transform:translateY(-20px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+@keyframes pop{
+    0%{transform:scale(0.95)}
+    100%{transform:scale(1)}
+}
+
+/* ===== NAV ===== */
+.nav{
+    display:flex;
+    gap:15px;
+    background:linear-gradient(90deg,#ff9f43,#ff6b00);
+    padding:15px;
+    border-radius:12px;
+    animation:slideDown 0.8s ease;
+}
+
+.nav a{
+    color:#fff;
+    text-decoration:none;
+    font-weight:bold;
+    padding:8px 14px;
+    border-radius:20px;
+    transition:all 0.3s ease;
+}
+
+.nav a:hover{
+    background:#fff;
+    color:#ff6b00;
+    transform:translateY(-2px);
+}
+
+/* ===== HEADING ===== */
+h2{
+    margin:25px 0;
+    text-align:center;
+    color:#ff6b00;
+    animation:fadeIn 1.2s ease;
+}
+
+/* ===== FORM ===== */
+form{
+    max-width:420px;
+    margin:0 auto 30px;
+    background:#ffffff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.12);
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    animation:pop 0.6s ease;
+}
+
+input{
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+    transition:0.3s;
+}
+
+input:focus{
+    outline:none;
+    border-color:#ff9f43;
+    box-shadow:0 0 8px rgba(255,159,67,0.4);
+}
+
+/* ===== BUTTON ===== */
+button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:all 0.3s ease;
+}
+
+.add-btn{
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:#fff;
+}
+
+.add-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 8px 15px rgba(0,114,255,0.4);
+}
+
+/* ===== TABLE ===== */
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    border-radius:12px;
+    overflow:hidden;
+    animation:fadeIn 1.5s ease;
+}
+
+th, td{
+    padding:14px;
+    text-align:center;
+}
+
+th{
+    background:linear-gradient(90deg,#ff9f43,#ff6b00);
+    color:#fff;
+}
+
+tr{
+    transition:0.3s;
+}
+
+tr:hover{
+    background:#fff3e6;
+    transform:scale(1.01);
+}
+
+/* ===== DELETE BUTTON ===== */
+.delete{
+    background:linear-gradient(90deg,#ff4d4d,#d63031);
+    color:#fff;
+    padding:7px 12px;
+    border-radius:20px;
+    transition:0.3s;
+}
+
+.delete:hover{
+    transform:scale(1.1);
+    box-shadow:0 6px 12px rgba(214,48,49,0.4);
+}
+</style>
+</head>
+
+<body onload="loadCourses()">
+
+<div class="nav">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student_detail.html">Students</a>
+    <a href="#">Courses</a>
+</div>
+
+<h2>Add Course</h2>
+
+<form onsubmit="addCourse(event)">
+    <input id="courseName" placeholder="Course Name" required>
+    <input id="duration" placeholder="Duration" required>
+    <button class="add-btn" type="submit">Save Course</button>
+</form>
+
+<h2>All Courses</h2>
+
+<table>
+<thead>
+<tr>
+    <th>#</th>
+    <th>Course Name</th>
+    <th>Duration</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody id="courseTable">
+</tbody>
+</table>
+
+<script>
+/* ADD COURSE */
+function addCourse(event){
+    event.preventDefault();
+
+    const name = document.getElementById("courseName").value.trim();
+    const duration = document.getElementById("duration").value.trim();
+
+    let courses = JSON.parse(localStorage.getItem("courses")) || [];
+
+    courses.push({name, duration});
+    localStorage.setItem("courses", JSON.stringify(courses));
+
+    alert("✅ Course Added Successfully");
+
+    event.target.reset();
+    loadCourses();
+}
+
+/* LOAD COURSES */
+function loadCourses(){
+    const table = document.getElementById("courseTable");
+    let courses = JSON.parse(localStorage.getItem("courses")) || [];
+
+    table.innerHTML = "";
+
+    courses.forEach((c, i) => {
+        table.innerHTML += `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${c.name}</td>
+            <td>${c.duration}</td>
+            <td>
+                <button class="delete" onclick="deleteCourse(${i})">Delete</button>
+            </td>
+        </tr>`;
+    });
+}
+
+/* DELETE COURSE */
+function deleteCourse(index){
+    let courses = JSON.parse(localStorage.getItem("courses"));
+    courses.splice(index,1);
+    localStorage.setItem("courses", JSON.stringify(courses));
+    loadCourses();
+}
+</script>
+
+</body>
+</html>

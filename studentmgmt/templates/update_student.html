@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Update Student</title>
+
+<style>
+/* ===== RESET ===== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+/* ===== BODY ===== */
+body{
+    background:linear-gradient(135deg,#f1f5ff,#ffffff);
+    color:#333;
+    animation:fadeIn 1s ease-in;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes slideDown{
+    from{transform:translateY(-20px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+@keyframes popUp{
+    from{transform:scale(0.92);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
+
+/* ===== NAVBAR ===== */
+.nav{
+    width:92%;
+    max-width:1000px;
+    margin:20px auto;
+    padding:16px 22px;
+    background:linear-gradient(90deg,#4263eb,#4dabf7);
+    border-radius:18px;
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    box-shadow:0 10px 26px rgba(0,0,0,0.18);
+    animation:slideDown 0.8s ease;
+}
+
+.nav a{
+    color:#fff;
+    text-decoration:none;
+    font-weight:bold;
+    padding:9px 16px;
+    border-radius:20px;
+    transition:all 0.3s ease;
+}
+
+.nav a:hover{
+    background:#ffffff;
+    color:#4263eb;
+    transform:translateY(-2px);
+}
+
+/* ===== UPDATE CONTAINER ===== */
+.update-student-container{
+    max-width:540px;
+    margin:45px auto;
+    background:#ffffff;
+    padding:36px;
+    border-radius:22px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.12);
+    animation:popUp 0.7s ease;
+}
+
+/* ===== HEADING ===== */
+h2{
+    text-align:center;
+    margin-bottom:18px;
+    font-size:28px;
+    color:#4263eb;
+}
+
+/* ===== INFO BOX ===== */
+.info{
+    background:linear-gradient(90deg,#fff4e6,#ffe8cc);
+    padding:15px;
+    border-left:6px solid #ff922b;
+    border-radius:12px;
+    margin-bottom:20px;
+    text-align:center;
+    font-weight:500;
+    color:#555;
+}
+
+/* ===== INPUTS ===== */
+input{
+    width:100%;
+    padding:14px 16px;
+    margin:14px 0;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:15px;
+    transition:0.3s;
+}
+
+input:focus{
+    outline:none;
+    border-color:#4dabf7;
+    box-shadow:0 0 0 4px rgba(77,171,247,0.25);
+}
+
+/* ===== BUTTON ===== */
+button{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    background:linear-gradient(90deg,#ff922b,#ff7a00);
+    color:#ffffff;
+    border:none;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.06);
+    box-shadow:0 10px 22px rgba(255,146,43,0.45);
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+    .update-student-container{
+        margin:25px;
+        padding:26px;
+    }
+
+    .nav{
+        flex-wrap:wrap;
+    }
+}
+</style>
+</head>
+
+<body onload="loadStudentForUpdate()">
+
+<!-- NAVBAR -->
+<div class="nav">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student_list.html">Students</a>
+    <a href="add_student.html">Add Student</a>
+    <a href="course_list.html">Courses</a>
+    <a href="add_course.html">Add Course</a>
+</div>
+
+<hr>
+
+<!-- UPDATE STUDENT FORM -->
+<div class="update-student-container">
+    <h2>✏️ Update Student</h2>
+    <div class="info">Edit student details and save changes</div>
+
+    <form onsubmit="updateStudent(event)">
+        <input type="text" id="name" placeholder="Student Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="text" id="course" placeholder="Course" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <button type="submit">Update Student</button>
+    </form>
+</div>
+
+<script>
+let studentIndex = null;
+
+/* ===== LOAD STUDENT ===== */
+function loadStudentForUpdate(){
+    const params = new URLSearchParams(window.location.search);
+    studentIndex = params.get("index");
+
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+
+    if(studentIndex === null || !students[studentIndex]){
+        alert("Student not found");
+        window.location.href = "student_list.html";
+        return;
+    }
+
+    document.getElementById("name").value   = students[studentIndex].name;
+    document.getElementById("email").value  = students[studentIndex].email;
+    document.getElementById("course").value = students[studentIndex].course;
+    document.getElementById("age").value    = students[studentIndex].age;
+}
+
+/* ===== UPDATE STUDENT ===== */
+function updateStudent(event){
+    event.preventDefault();
+
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+
+    students[studentIndex] = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        course: document.getElementById("course").value.trim(),
+        age: document.getElementById("age").value.trim()
+    };
+
+    localStorage.setItem("students", JSON.stringify(students));
+
+    alert("✅ Student updated successfully");
+    window.location.href = "student_list.html";
+}
+</script>
+
+</body>
+</html>

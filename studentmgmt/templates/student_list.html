@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student List</title>
+
+<style>
+/* ===== GLOBAL ===== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background: linear-gradient(135deg,#f1f5f9,#ffffff);
+    color:#333;
+    animation:fadeIn 1s ease-in;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes slideDown{
+    from{transform:translateY(-20px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+@keyframes rowFade{
+    from{opacity:0;transform:translateX(-10px)}
+    to{opacity:1;transform:translateX(0)}
+}
+
+/* ===== NAVBAR ===== */
+.nav {
+    width:92%;
+    max-width:1000px;
+    margin:20px auto;
+    padding:16px 22px;
+    background:linear-gradient(90deg,#ff7a00,#ffb703);
+    border-radius:18px;
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    box-shadow:0 10px 26px rgba(0,0,0,0.18);
+    animation:slideDown 0.8s ease;
+}
+
+.nav a {
+    color:white;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:bold;
+    padding:9px 16px;
+    border-radius:20px;
+    transition:all 0.3s ease;
+}
+
+.nav a:hover {
+    background:white;
+    color:#ff7a00;
+    transform:translateY(-2px);
+}
+
+.nav a.active {
+    background:#ff7a00;
+}
+
+/* ===== HEADING ===== */
+h2 {
+    text-align:center;
+    margin-top:30px;
+    color:#ff7a00;
+    font-size:28px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width:92%;
+    max-width:1000px;
+    margin:30px auto;
+    border-collapse:collapse;
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 14px 32px rgba(0,0,0,0.12);
+}
+
+thead {
+    background:linear-gradient(90deg,#ff922b,#ffa94d);
+}
+
+th {
+    color:white;
+    padding:16px;
+    text-align:left;
+}
+
+td {
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+tbody tr {
+    animation:rowFade 0.4s ease;
+    transition:0.3s;
+}
+
+tbody tr:hover {
+    background:#fff4e6;
+    transform:scale(1.01);
+}
+
+/* ===== BUTTONS ===== */
+button {
+    padding:7px 14px;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.view {
+    background:linear-gradient(90deg,#4dabf7,#228be6);
+    color:white;
+}
+
+.view:hover {
+    transform:scale(1.05);
+    box-shadow:0 6px 14px rgba(34,139,230,0.4);
+}
+
+.delete {
+    background:linear-gradient(90deg,#ff6b6b,#fa5252);
+    color:white;
+}
+
+.delete:hover {
+    transform:scale(1.05);
+    box-shadow:0 6px 14px rgba(250,82,82,0.4);
+}
+
+/* ===== EMPTY STATE ===== */
+#studentTable:empty::after{
+    content:"No students found";
+    display:block;
+    text-align:center;
+    padding:25px;
+    color:#999;
+    font-style:italic;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:700px){
+    .nav{
+        flex-wrap:wrap;
+    }
+
+    table{
+        width:100%;
+    }
+
+    th, td{
+        padding:12px;
+    }
+}
+</style>
+</head>
+
+<body onload="loadStudents()">
+
+<!-- NAVBAR -->
+<div class="nav">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="student_list.html" class="active">Students</a>
+    <a href="add_student.html">Add Student</a>
+    <a href="course_list.html">Courses</a>
+    <a href="add_course.html">Add Course</a>
+</div>
+
+<h2>👨‍🎓 Student List</h2>
+
+<!-- TABLE -->
+<table>
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Course</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody id="studentTable"></tbody>
+</table>
+
+<script>
+/* ===== LOAD STUDENTS ===== */
+function loadStudents() {
+    const table = document.getElementById("studentTable");
+    let students = JSON.parse(localStorage.getItem("
